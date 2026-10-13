@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyCamp — курс Python</title>
+<style>
+:root{--bg:#f5f6f7;--panel:#fff;--ink:#1b1b32;--mute:#5a5a72;--line:#d0d0d9;--gold:#f1be32;--gold-ink:#3b2e00;--ok:#1a7f37;--bad:#c62828;--code:#0a0a23;--codeink:#e8e8f4}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0a23;--panel:#1b1b32;--ink:#f5f6f7;--mute:#a9a9c0;--line:#3b3b4f;--ok:#5fd07a;--bad:#ff8a80;--code:#0a0a23}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,"Times New Roman",serif}
+.app{display:grid;grid-template-columns:300px 1fr;min-height:100%}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:20px 16px;overflow:auto;max-height:100vh;position:sticky;top:0}
+h1{font:700 22px/1.2 system-ui,sans-serif;margin:0 0 4px}
+.sub{color:var(--mute);font:14px system-ui,sans-serif;margin:0 0 14px}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .4s}
+#pct{font:13px system-ui,sans-serif;color:var(--mute);margin:6px 0 16px}
+.mod{font:700 14px system-ui,sans-serif;margin:16px 0 6px}
+.les{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:6px;padding:7px 8px;color:var(--ink);font:15px system-ui,sans-serif;cursor:pointer}
+.les:hover{background:var(--bg)}
+.les.cur{background:var(--gold);color:var(--gold-ink);font-weight:600}
+.les .m{width:18px;text-align:center;color:var(--mute)}
+.les.done .m{color:var(--ok);font-weight:700}
+.les.cur .m{color:var(--gold-ink)}
+main{padding:28px clamp(16px,4vw,48px);max-width:900px;width:100%}
+h2{font:700 28px/1.2 system-ui,sans-serif;margin:0 0 12px}
+.theory p{max-width:68ch}
+pre,textarea,.out{font:14px/1.55 ui-monospace,Menlo,Consolas,monospace}
+.theory pre{background:var(--code);color:var(--codeink);padding:12px 14px;border-radius:6px;overflow:auto}
+.task{border-left:4px solid var(--gold);background:var(--panel);padding:10px 14px;margin:16px 0;border-radius:0 6px 6px 0;font-family:system-ui,sans-serif}
+textarea{width:100%;height:240px;background:var(--code);color:var(--codeink);border:2px solid var(--line);border-radius:6px;padding:12px;resize:vertical;tab-size:4;white-space:pre}
+textarea:focus{outline:none;border-color:var(--gold)}
+.row{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap;align-items:center;font-family:system-ui,sans-serif}
+button.b{border:2px solid var(--gold);background:var(--gold);color:var(--gold-ink);font:700 15px system-ui,sans-serif;padding:9px 18px;border-radius:6px;cursor:pointer}
+button.b.g{background:none;color:var(--ink);border-color:var(--line)}
+button.b:disabled{opacity:.5;cursor:wait}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.out{background:var(--code);color:var(--codeink);border-radius:6px;padding:12px;min-height:56px;white-space:pre-wrap;word-break:break-word}
+.res{margin-top:10px;font:600 15px system-ui,sans-serif}
+.res.ok{color:var(--ok)}.res.bad{color:var(--bad)}
+#st{font:13px system-ui,sans-serif;color:var(--mute)}
+@media(max-width:760px){.app{grid-template-columns:1fr}aside{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <h1>PyCamp</h1>
+  <p class="sub">Python с нуля: читаешь, пишешь, проверяешь</p>
+  <div class="bar"><i id="fill"></i></div>
+  <div id="pct"></div>
+  <nav id="nav" aria-label="Уроки"></nav>
+  <p class="sub" style="margin-top:20px"><button class="b g" id="reset" style="font-size:13px;padding:5px 10px">Сбросить прогресс</button></p>
+</aside>
+<main>
+  <div id="view"></div>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pyodide@0.26.4/full/pyodide.js"></script>
+<script>
+const COURSE=[
+["Основы",[
+{t:"Привет, мир",h:`<p>Функция <code>print()</code> выводит текст на экран. Текст пишут в кавычках.</p><pre>print("Привет!")</pre>`,
+ k:"Выведите ровно: Hello, World!",s:'# Ваш код\n',
+ c:'assert out.strip()=="Hello, World!","Нужно вывести ровно: Hello, World!"'},
+{t:"Переменные и числа",h:`<p>Переменная хранит значение: <code>x = 5</code>. Числа бывают целые (<code>int</code>) и дробные (<code>float</code>). Их можно складывать, вычитать, умножать (<code>*</code>), делить (<code>/</code>).</p><pre>a = 2\nb = 3.5\nprint(a * b)</pre>`,
+ k:"Создайте переменные age = 25 и price = 9.99 и выведите их сумму.",s:'# age = ...\n',
+ c:'assert ns.get("age")==25 and ns.get("price")==9.99,"Создайте age = 25 и price = 9.99"\nassert abs(float(out.strip())-34.99)<1e-9,"Выведите сумму age + price"'},
+{t:"Строки и f-строки",h:`<p>Перед кавычками f-строки ставят <code>f</code>, а значения переменных вставляют в фигурных скобках.</p><pre>name = "Ада"\nprint(f"Привет, {name}!")</pre>`,
+ k:'Выведите через f-строку: Ада родилась в 1815 году',s:'name = "Ада"\nyear = 1815\n',
+ c:'assert out.strip()=="Ада родилась в 1815 году","Ожидается: Ада родилась в 1815 году"\nassert "f\\"" in code or "f\'" in code,"Используйте f-строку"'}
+]],
+["Управление потоком",[
+{t:"Условия if / elif / else",h:`<p>Блок после двоеточия сдвигают на 4 пробела. Выполняется первая ветка, чьё условие истинно.</p><pre>n = 7\nif n % 2 == 0:\n    print("чётное")\nelse:\n    print("нечётное")</pre>`,
+ k:'Если temp больше 25 — выведите Жарко, если больше 15 — Тепло, иначе — Холодно.',s:'temp = 30\n',
+ c:'assert out.strip()=="Жарко","При temp = 30 нужно вывести Жарко"\nassert "elif" in code,"Используйте elif"'},
+{t:"Цикл for",h:`<p><code>range(n)</code> даёт числа от 0 до n-1, <code>range(a, b)</code> — от a до b-1.</p><pre>for i in range(3):\n    print(i)</pre>`,
+ k:'Выведите квадраты чисел от 1 до 5, каждое с новой строки.',s:'',
+ c:'assert out.split()==["1","4","9","16","25"],"Ожидается: 1, 4, 9, 16, 25 — каждое на своей строке"\nassert "for" in code,"Используйте цикл for"'},
+{t:"Цикл while",h:`<p><code>while</code> повторяет блок, пока условие истинно. Следите, чтобы условие когда-нибудь стало ложным, иначе цикл не остановится.</p><pre>i = 0\nwhile i < 3:\n    print(i)\n    i += 1</pre>`,
+ k:'С помощью while найдите сумму чисел от 1 до 100 и выведите её.',s:'total = 0\ni = 1\n',
+ c:'assert out.strip()=="5050","Сумма должна быть 5050"\nassert "while" in code,"Используйте цикл while"'}
+]],
+["Структуры данных",[
+{t:"Списки",h:`<p>Список — упорядоченный набор: <code>[1, 2, 3]</code>. Методы: <code>append(x)</code> добавляет, <code>remove(x)</code> удаляет, <code>sorted(lst)</code> возвращает отсортированную копию.</p><pre>nums = [3, 1]\nnums.append(2)\nprint(sorted(nums))</pre>`,
+ k:'Добавьте в fruits "киви", удалите "банан" и выведите отсортированный список.',s:'fruits = ["банан", "яблоко", "вишня"]\n',
+ c:'assert out.strip()==str(["вишня","киви","яблоко"]),"Ожидается: [\'вишня\', \'киви\', \'яблоко\']"'},
+{t:"Словари",h:`<p>Словарь хранит пары ключ — значение: <code>{"a": 1}</code>. Читать: <code>d["a"]</code>, добавлять: <code>d["b"] = 2</code>, значения: <code>d.values()</code>.</p><pre>d = {"a": 1}\nd["b"] = 2\nprint(sum(d.values()))</pre>`,
+ k:'Создайте словарь ages: Аня — 20, Боб — 25. Добавьте Вика — 30 и выведите сумму возрастов.',s:'',
+ c:'assert ns.get("ages")=={"Аня":20,"Боб":25,"Вика":30},"В ages должны быть Аня 20, Боб 25, Вика 30"\nassert out.strip()=="75","Выведите сумму: 75"'}
+]],
+["Функции",[
+{t:"Определение функции",h:`<p>Функция объявляется через <code>def</code>, результат возвращает <code>return</code>.</p><pre>def double(x):\n    return x * 2</pre>`,
+ k:'Напишите функцию square(x), возвращающую квадрат числа.',s:'def square(x):\n    pass\n',
+ c:'f=ns.get("square")\nassert callable(f),"Определите функцию square"\nassert f(7)==49 and f(-3)==9 and f(0)==0,"square(7) должна вернуть 49"'},
+{t:"Аргументы по умолчанию",h:`<p>У параметра может быть значение по умолчанию: оно используется, если аргумент не передали.</p><pre>def power(x, n=2):\n    return x ** n</pre>`,
+ k:'Напишите greet(name, greeting="Привет"), возвращающую строку вида "Привет, Ада!".',s:'def greet(name, greeting="Привет"):\n    pass\n',
+ c:'g=ns.get("greet")\nassert callable(g),"Определите функцию greet"\nassert g("Ада")=="Привет, Ада!","greet(\'Ада\') должна вернуть \'Привет, Ада!\'"\nassert g("Боб","Здравствуй")=="Здравствуй, Боб!","Проверьте второй аргумент"'}
+]],
+["ООП и ошибки",[
+{t:"Классы",h:`<p>Класс описывает тип объекта. <code>__init__</code> вызывается при создании, <code>self</code> — сам объект.</p><pre>class Cat:\n    def __init__(self, name):\n        self.name = name</pre>`,
+ k:'Создайте класс Dog с именем name и методом speak(), возвращающим "Бим говорит Гав" для Dog("Бим").',s:'class Dog:\n    pass\n',
+ c:'D=ns.get("Dog")\nassert D,"Определите класс Dog"\nassert D("Бим").speak()=="Бим говорит Гав","speak() должен вернуть \'Бим говорит Гав\'"\nassert D("Рекс").name=="Рекс","Сохраните имя в self.name"'},
+{t:"Исключения",h:`<p><code>try</code> пробует выполнить код, <code>except</code> перехватывает ошибку, чтобы программа не упала.</p><pre>try:\n    int("abc")\nexcept ValueError:\n    print("не число")</pre>`,
+ k:'Напишите safe_div(a, b): вернуть a / b, а при делении на ноль — None.',s:'def safe_div(a, b):\n    pass\n',
+ c:'f=ns.get("safe_div")\nassert callable(f),"Определите safe_div"\nassert f(10,4)==2.5,"safe_div(10, 4) должна вернуть 2.5"\nassert f(1,0) is None,"При делении на ноль верните None"\nassert "except" in code,"Используйте try / except"'}
+]]
+];
+const L=[];COURSE.forEach((m,mi)=>m[1].forEach(l=>{l.mi=mi;L.push(l)}));
+const $=id=>document.getElementById(id);
+let cur=0,py=null,S={d:{},c:{},p:0};
+try{S=Object.assign(S,JSON.parse(localStorage.getItem("pycamp")||"{}"))}catch(e){}
+cur=Math.min(S.p||0,L.length-1);
+const save=()=>{try{localStorage.setItem("pycamp",JSON.stringify({d:S.d,c:S.c,p:cur}))}catch(e){}};
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+function nav(){
+  let h="",i=0;
+  COURSE.forEach(m=>{h+=`<div class="mod">${m[0]}</div>`;m[1].forEach(l=>{const k=i++;
+    h+=`<button class="les${k==cur?" cur":""}${S.d[k]?" done":""}" data-i="${k}"><span class="m">${S.d[k]?"✓":"○"}</span>${l.t}</button>`})});
+  $("nav").innerHTML=h;
+  const n=Object.keys(S.d).length;
+  $("fill").style.width=(n/L.length*100)+"%";
+  $("pct").textContent=`Пройдено ${n} из ${L.length}`;
+}
+function view(){
+  const l=L[cur];
+  $("view").innerHTML=`<h2>${l.t}</h2><div class="theory">${l.h}</div>
+  <div class="task"><b>Задание.</b> ${esc(l.k)}</div>
+  <textarea id="ed" spellcheck="false" aria-label="Редактор кода"></textarea>
+  <div class="row"><button class="b" id="run">Запустить и проверить</button><button class="b g" id="rs">Начать заново</button><span id="st"></span></div>
+  <div class="out" id="out" aria-live="polite"></div><div class="res" id="res"></div>
+  <div class="row"><button class="b g" id="pv" ${cur?"":"disabled"}>Назад</button><button class="b g" id="nx" ${cur<L.length-1?"":"disabled"}>Дальше</button></div>`;
+  const ed=$("ed");ed.value=S.c[cur]??l.s;
+  ed.addEventListener("input",()=>{S.c[cur]=ed.value;save()});
+  ed.addEventListener("keydown",e=>{
+    if(e.key==="Tab"){e.preventDefault();const a=ed.selectionStart;ed.setRangeText("    ",a,ed.selectionEnd,"end")}
+    if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();run()}});
+  $("run").onclick=run;
+  $("rs").onclick=()=>{ed.value=l.s;S.c[cur]=l.s;save()};
+  $("pv").onclick=()=>go(cur-1);$("nx").onclick=()=>go(cur+1);
+  status();
+}
+function go(i){cur=i;save();nav();view();scrollTo(0,0)}
+function status(){const s=$("st");if(s)s.textContent=py?"Python готов · Ctrl+Enter — запуск":"Загружаю Python…"}
+
+const HELPER=`
+def run_check(code, test):
+    import io, contextlib
+    buf = io.StringIO(); ns = {'__name__': '__main__'}
+    try:
+        with contextlib.redirect_stdout(buf):
+            exec(code, ns)
+    except BaseException as e:
+        return [buf.getvalue(), 0, type(e).__name__ + ': ' + str(e)]
+    out = buf.getvalue()
+    try:
+        exec(test, {'ns': ns, 'out': out, 'code': code})
+    except AssertionError as e:
+        return [out, 0, str(e) or 'Проверка не пройдена']
+    except Exception as e:
+        return [out, 0, 'Ошибка проверки: ' + type(e).__name__ + ': ' + str(e)]
+    return [out, 1, 'Все тесты пройдены!']
+`;
+async function init(){
+  try{py=await loadPyodide();py.runPython(HELPER);status()}
+  catch(e){const s=$("st");if(s)s.textContent="Не удалось загрузить Python — нужен интернет для первого запуска."}
+}
+async function run(){
+  if(!py){$("res").className="res bad";$("res").textContent="Python ещё загружается, подождите пару секунд.";return}
+  const b=$("run");b.disabled=true;
+  const r=py.globals.get("run_check")($("ed").value,L[cur].c).toJs();
+  b.disabled=false;
+  $("out").textContent=r[0]||"(вывода нет)";
+  const ok=r[1]===1;
+  $("res").className="res "+(ok?"ok":"bad");
+  $("res").textContent=(ok?"✓ ":"✗ ")+r[2];
+  if(ok){S.d[cur]=1;save();nav()}
+}
+$("nav").addEventListener("click",e=>{const b=e.target.closest(".les");if(b)go(+b.dataset.i)});
+$("reset").onclick=()=>{if(confirm("Удалить весь прогресс и сохранённый код?")){S={d:{},c:{},p:0};save();go(0)}};
+nav();view();init();
+</script>
+</body>
+</html>
