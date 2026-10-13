@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦇 vibecoding — Мрачный Хэллоуин</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at 50% 0%, #3a1a2e 0%, #1a0a14 45%, #0a0510 100%),
+      linear-gradient(180deg, #1a0a14 0%, #0a0510 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Туман на фоне */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(120, 40, 80, 0.25) 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 70%, rgba(90, 20, 60, 0.22) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(150, 60, 90, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    animation: fogShift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes fogShift {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    100% { transform: translate(-30px, -20px) scale(1.08); opacity: 1; }
+  }
+
+  /* ==================== БОЛЬШИЕ СПОКОЙНЫЕ МЫШКИ ==================== */
+  .bat {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    filter:
+      drop-shadow(0 6px 14px rgba(0, 0, 0, 0.9))
+      drop-shadow(0 0 22px rgba(160, 60, 100, 0.28));
+    will-change: transform;
+  }
+
+  .bat.fly-right {
+    left: -18%;
+    animation-name: flyRight;
+    animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+    animation-iteration-count: infinite;
+  }
+
+  .bat.fly-left {
+    right: -18%;
+    animation-name: flyLeft;
+    animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+    animation-iteration-count: infinite;
+  }
+
+  .bat.circle {
+    animation-name: circleFlight;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* Медленное грациозное вращение */
+  .bat .spin {
+    display: inline-block;
+    animation: spin 9s linear infinite;
+  }
+
+  .bat .spin.slow   { animation-duration: 14s; }
+  .bat .spin.slower { animation-duration: 20s; }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* Плавное покачивание крыльев */
+  .bat .flap {
+    display: inline-block;
+    animation: flap 2.6s ease-in-out infinite;
+  }
+
+  .bat .flap.slow { animation-duration: 3.8s; }
+
+  @keyframes flap {
+    0%, 100% { transform: scaleY(1) rotate(0deg); }
+    50%      { transform: scaleY(0.92) rotate(2deg); }
+  }
+
+  /* Медленный, спокойный полёт */
+  @keyframes flyRight {
+    0%   { transform: translateX(0) translateY(0); }
+    20%  { transform: translateX(28vw) translateY(-55px); }
+    40%  { transform: translateX(55vw) translateY(35px); }
+    60%  { transform: translateX(80vw) translateY(-45px); }
+    80%  { transform: translateX(105vw) translateY(30px); }
+    100% { transform: translateX(135vw) translateY(0); }
+  }
+
+  @keyframes flyLeft {
+    0%   { transform: scaleX(-1) translateX(0) translateY(0); }
+    20%  { transform: scaleX(-1) translateX(28vw) translateY(45px); }
+    40%  { transform: scaleX(-1) translateX(55vw) translateY(-40px); }
+    60%  { transform: scaleX(-1) translateX(80vw) translateY(50px); }
+    80%  { transform: scaleX(-1) translateX(105vw) translateY(-35px); }
+    100% { transform: scaleX(-1) translateX(135vw) translateY(0); }
+  }
+
+  /* Круговое парение — спокойное, широкое */
+  @keyframes circleFlight {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(70px, -70px); }
+    50%  { transform: translate(140px, 0); }
+    75%  { transform: translate(70px, 70px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  /* ==================== ФОНОВЫЕ ПРИЗРАКИ ==================== */
+  .ghost-bg {
+    position: fixed;
+    font-size: 110px;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(2px);
+  }
+  .ghost-bg.one { top: 6%;  right: 5%;  animation: float 10s ease-in-out infinite; }
+  .ghost-bg.two { bottom: 8%; left: 4%; animation: float 13s ease-in-out infinite; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-22px); }
+  }
+
+  /* ==================== КОНТЕЙНЕР ==================== */
+  .container {
+    background: linear-gradient(180deg, #150810 0%, #1e0c18 50%, #140710 100%);
+    border-radius: 20px;
+    box-shadow:
+      0 30px 90px rgba(0, 0, 0, 0.9),
+      0 0 60px rgba(180, 50, 90, 0.22),
+      0 0 0 1px rgba(180, 60, 100, 0.35),
+      inset 0 1px 0 rgba(255, 150, 180, 0.08);
+    padding: 48px 42px;
+    max-width: 720px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    border-top: 4px solid #8b1e3f;
+    border-bottom: 1px solid #5a1428;
+  }
+
+  /* Тлеющая тыква в углу */
+  .pumpkin-corner {
+    position: absolute;
+    top: -28px;
+    right: 28px;
+    font-size: 54px;
+    transform: rotate(10deg);
+    filter:
+      drop-shadow(0 0 18px rgba(255, 120, 40, 0.85))
+      drop-shadow(0 0 40px rgba(255, 60, 30, 0.5));
+    animation: glow 2.8s ease-in-out infinite, wobble 4.5s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 14px rgba(255, 120, 40, 0.7)) drop-shadow(0 0 30px rgba(255, 60, 30, 0.4)); }
+    50%      { filter: drop-shadow(0 0 26px rgba(255, 140, 60, 1)) drop-shadow(0 0 55px rgba(255, 80, 40, 0.7)); }
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate(10deg); }
+    50%      { transform: rotate(-6deg); }
+  }
+
+  /* Свеча в другом углу */
+  .candle-corner {
+    position: absolute;
+    top: -22px;
+    left: 28px;
+    font-size: 42px;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 0 14px rgba(255, 170, 60, 0.7));
+    animation: flicker 1.6s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1;   transform: rotate(-8deg) scale(1); }
+    25%      { opacity: 0.85; transform: rotate(-6deg) scale(0.98); }
+    50%      { opacity: 1;   transform: rotate(-9deg) scale(1.03); }
+    75%      { opacity: 0.9;  transform: rotate(-7deg) scale(0.99); }
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px dashed rgba(180, 60, 100, 0.4);
+    position: relative;
+  }
+
+  .header h1 {
+    font-size: 34px;
+    color: #d4a0b8;
+    margin-bottom: 12px;
+    letter-spacing: 3px;
+    font-weight: 400;
+    text-transform: uppercase;
+    text-shadow:
+      0 0 20px rgba(200, 80, 120, 0.6),
+      0 0 40px rgba(150, 40, 80, 0.4);
+    font-family: 'Georgia', serif;
+  }
+
+  .header h1 .bat-icon {
+    display: inline-block;
+    animation: flap 3s ease-in-out infinite;
+  }
+
+  .header p {
+    color: #8b6a7a;
+    font-size: 14px;
+    font-style: italic;
+    letter-spacing: 1.5px;
+  }
+
+  .header p::before,
+  .header p::after {
+    content: "†";
+    color: #8b1e3f;
+    margin: 0 12px;
+    font-style: normal;
+    font-size: 16px;
+  }
+
+  .links-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .link-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: linear-gradient(90deg, #1a0a14 0%, #22101c 100%);
+    border: 1px solid rgba(180, 60, 100, 0.28);
+    border-radius: 12px;
+    text-decoration: none;
+    color: #c8a0b4;
+    transition: all 0.4s cubic-bezier(0.34, 1.3, 0.64, 1);
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1.2px;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+  }
+
+  .link-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #b8335a, #6b1028);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.4s ease;
+  }
+
+  .link-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(180, 60, 100, 0.12) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .link-card:hover {
+    background: linear-gradient(90deg, #2a1220 0%, #3a1828 100%);
+    border-color: rgba(200, 80, 120, 0.6);
+    transform: translateX(8px);
+    color: #e8c0d0;
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.6),
+      0 0 24px rgba(180, 60, 100, 0.2);
+    text-shadow: 0 0 12px rgba(220, 120, 160, 0.5);
+  }
+
+  .link-card:hover::before {
+    transform: scaleY(1);
+  }
+
+  .link-card:hover::after {
+    opacity: 1;
+  }
+
+  .link-card:hover .arrow {
+    transform: translateX(6px);
+    color: #c83060;
+    text-shadow: 0 0 16px rgba(200, 48, 96, 0.9);
+  }
+
+  .link-card:hover .link-icon {
+    transform: scale(1.2) rotate(-6deg);
+    filter: drop-shadow(0 0 10px rgba(200, 80, 120, 0.8));
+  }
+
+  .link-icon {
+    font-size: 22px;
+    margin-right: 16px;
+    transition: all 0.4s ease;
+    display: inline-block;
+    filter: drop-shadow(0 0 6px rgba(150, 60, 100, 0.5));
+  }
+
+  .link-name {
+    flex: 1;
+  }
+
+  .arrow {
+    font-size: 20px;
+    color: #6b3a4a;
+    transition: all 0.4s ease;
+  }
+
+  .footer {
+    margin-top: 34px;
+    text-align: center;
+    font-size: 12px;
+    color: #7a5566;
+    letter-spacing: 2px;
+    font-style: italic;
+    text-transform: uppercase;
+  }
+
+  .footer .spooky {
+    display: inline-block;
+    animation: float 4s ease-in-out infinite;
+    margin: 0 8px;
+    filter: drop-shadow(0 0 8px rgba(200, 80, 120, 0.5));
+  }
+
+  /* Паутина в углу */
+  .spider-web {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 120px;
+    opacity: 0.3;
+    pointer-events: none;
+    overflow: hidden;
+    border-top-left-radius: 20px;
+  }
+
+  .spider-web svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Пульсирующее свечение вокруг контейнера */
+  .container::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(180, 60, 100, 0.15), transparent, rgba(140, 30, 70, 0.15));
+    z-index: -1;
+    animation: aura 5s ease-in-out infinite;
+  }
+
+  @keyframes aura {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 1; }
+  }
+
+  @media (max-width: 520px) {
+    .container { padding: 34px 22px; }
+    .header h1 { font-size: 20px; letter-spacing: 2px; }
+    .pumpkin-corner { font-size: 40px; top: -20px; right: 16px; }
+    .candle-corner { font-size: 32px; top: -16px; left: 16px; }
+    .link-card { padding: 15px 18px; font-size: 14px; }
+    .link-icon { font-size: 18px; margin-right: 12px; }
+    .bat { font-size: 40px !important; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ==================== БОЛЬШИЕ СПОКОЙНЫЕ МЫШКИ ==================== -->
+  <!-- Летят слева направо (медленно и плавно) -->
+  <div class="bat fly-right" style="top: 10%; font-size: 78px; animation-duration: 32s; animation-delay: 0s;">
+    <span class="spin slow"><span class="flap">🦇</span></span>
+  </div>
+  <div class="bat fly-right" style="top: 32%; font-size: 64px; animation-duration: 38s; animation-delay: 6s;">
+    <span class="spin slower"><span class="flap slow">🦇</span></span>
+  </div>
+  <div class="bat fly-right" style="top: 60%; font-size: 88px; animation-duration: 30s; animation-delay: 12s;">
+    <span class="spin slow"><span class="flap">🦇</span></span>
+  </div>
+  <div class="bat fly-right" style="top: 82%; font-size: 58px; animation-duration: 40s; animation-delay: 18s;">
+    <span class="spin slower"><span class="flap slow">🦇</span></span>
+  </div>
+
+  <!-- Летят справа налево -->
+  <div class="bat fly-left" style="top: 20%; font-size: 72px; animation-duration: 36s; animation-delay: 4s;">
+    <span class="spin slow"><span class="flap slow">🦇</span></span>
+  </div>
+  <div class="bat fly-left" style="top: 48%; font-size: 82px; animation-duration: 34s; animation-delay: 14s;">
+    <span class="spin slower"><span class="flap">🦇</span></span>
+  </div>
+  <div class="bat fly-left" style="top: 74%; font-size: 60px; animation-duration: 42s; animation-delay: 22s;">
+    <span class="spin slow"><span class="flap slow">🦇</span></span>
+  </div>
+
+  <!-- Парят по кругу (2 шт., медленно) -->
+  <div class="bat circle" style="top: 22%; left: 18%; font-size: 76px; animation-duration: 16s; animation-delay: 0s;">
+    <span class="spin slow"><span class="flap">🦇</span></span>
+  </div>
+  <div class="bat circle" style="bottom: 22%; right: 18%; font-size: 68px; animation-duration: 20s; animation-delay: 3s;">
+    <span class="spin slower"><span class="flap slow">🦇</span></span>
+  </div>
+
+  <!-- ==================== ФОНОВЫЕ ПРИЗРАКИ ==================== -->
+  <div class="ghost-bg one">👻</div>
+  <div class="ghost-bg two">👻</div>
+
+  <!-- ==================== КОНТЕЙНЕР ==================== -->
+  <div class="container">
+    <div class="spider-web">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#a05a80" stroke-width="0.6" fill="none" opacity="0.7">
+          <line x1="0" y1="0" x2="100" y2="100"/>
+          <line x1="0" y1="0" x2="60" y2="100"/>
+          <line x1="0" y1="0" x2="100" y2="60"/>
+          <line x1="0" y1="0" x2="30" y2="100"/>
+          <line x1="0" y1="0" x2="100" y2="30"/>
+          <path d="M 20 0 Q 15 15 0 20"/>
+          <path d="M 40 0 Q 32 32 0 40"/>
+          <path d="M 60 0 Q 50 50 0 60"/>
+          <path d="M 80 0 Q 68 68 0 80"/>
+          <path d="M 100 0 Q 85 85 0 100"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="candle-corner">🕯️</div>
+    <div class="pumpkin-corner">🎃</div>
+
+    <div class="header">
+      <h1><span class="bat-icon">🦇</span> vibecoding <span class="bat-icon">🦇</span></h1>
+      <p>Сравнение решений от нейросетей</p>
+    </div>
+
+    <div class="links-grid">
+      <a href="alice.html" class="link-card">
+        <span class="link-icon">🕯️</span>
+        <span class="link-name">Alice</span>
+        <span class="arrow">†</span>
+      </a>
+
+      <a href="claude.html" class="link-card">
+        <span class="link-icon">🩸</span>
+        <span class="link-name">Claude</span>
+        <span class="arrow">†</span>
+      </a>
+
+      <a href="deepseek.html" class="link-card">
+        <span class="link-icon">🕸️</span>
+        <span class="link-name">DeepSeek</span>
+        <span class="arrow">†</span>
+      </a>
+
+      <a href="gemini.html" class="link-card">
+        <span class="link-icon">⚰️</span>
+        <span class="link-name">Gemini</span>
+        <span class="arrow">†</span>
+      </a>
+
+      <a href="qwen3_7plus.html" class="link-card">
+        <span class="link-icon">🦴</span>
+        <span class="link-name">Qwen 3.7 Plus</span>
+        <span class="arrow">†</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      <span class="spooky">🦇</span>
+      Выбери решение... если осмелишься
+      <span class="spooky">🕷️</span>
+    </div>
+  </div>
+
+</body>
+</html>
